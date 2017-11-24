@@ -110,7 +110,7 @@ public class HuffmannGui implements ActionListener {
     
 	FileReader fr;
 	JPanel panel = new JPanel();
-	private File file = new File("C:/Users/Hp/Desktop/City.txt");
+    private File file;
 	HuffmannGui(){
 		JFrame jfrm = new JFrame("Huffmann Encoder");
 		jfrm.setLayout(null);
