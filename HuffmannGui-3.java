@@ -22,17 +22,15 @@ public class HuffmannGui implements ActionListener {
     int length = 0;
     JLabel jlbl,jlbl1, jlbl2;
     abstract class HuffmanTree implements Comparable<HuffmanTree> {
-        public final int frequency; // the frequency of this tree
+        public final int frequency;
         public HuffmanTree(int freq) { frequency = freq; }
-        
-        // compares on the frequency
         public int compareTo(HuffmanTree tree) {
             return frequency - tree.frequency;
         }
     }
     
     class HuffmanLeaf extends HuffmanTree {
-        public final char value; // the character this leaf represents
+        public final char value;
         
         public HuffmanLeaf(int freq, char val) {
             super(freq);
@@ -41,7 +39,7 @@ public class HuffmannGui implements ActionListener {
     }
     
     class HuffmanNode extends HuffmanTree {
-        public final HuffmanTree left, right; // subtrees
+        public final HuffmanTree left, right;
         
         public HuffmanNode(HuffmanTree l, HuffmanTree r) {
             super(l.frequency + r.frequency);
@@ -50,23 +48,16 @@ public class HuffmannGui implements ActionListener {
         }
     }
     static String[] codes = new String[256];
-    // input is an array of frequencies, indexed by character code
     public HuffmanTree buildTree(int[] charFreqs) {
         PriorityQueue<HuffmanTree> trees = new PriorityQueue<HuffmanTree>();
-        // initially, we have a forest of leaves
-        // one for each non-empty character
         for (int i = 0; i < charFreqs.length; i++)
             if (charFreqs[i] > 0)
                 trees.offer(new HuffmanLeaf(charFreqs[i], (char)i));
         
         assert trees.size() > 0;
-        // loop until there is only one tree left
         while (trees.size() > 1) {
-            // two trees with least frequency
             HuffmanTree a = trees.poll();
             HuffmanTree b = trees.poll();
-            
-            // put into new node and re-insert into queue
             trees.offer(new HuffmanNode(a, b));
         }
         return trees.poll();
@@ -75,20 +66,13 @@ public class HuffmannGui implements ActionListener {
         assert tree != null;
         if (tree instanceof HuffmanLeaf) {
             HuffmanLeaf leaf = (HuffmanLeaf)tree;
-            
-            // print out character, frequency, and code for this leaf (which is just the prefix)
-            //System.out.println(leaf.value + "\t" + leaf.frequency + "\t" + prefix);
             codes[(int)leaf.value] = prefix.toString();
             
         } else if (tree instanceof HuffmanNode) {
             HuffmanNode node = (HuffmanNode)tree;
-            
-            // traverse left
             prefix.append('0');
             printCodes(node.left, prefix);
             prefix.deleteCharAt(prefix.length()-1);
-            
-            // traverse right
             prefix.append('1');
             printCodes(node.right, prefix);
             prefix.deleteCharAt(prefix.length()-1);
@@ -107,17 +91,10 @@ public class HuffmannGui implements ActionListener {
         }
         catch(FileNotFoundException f) {}
         catch(IOException ef) {}
-        // we will assume that all our characters will have
-        // code less than 256, for simplicity
         int[] charFreqs = new int[256];
-        // read each character and record the frequencies
         for (char c : test.toCharArray())
             charFreqs[c]++;
-        
-        // build tree
         HuffmanTree tree = buildTree(charFreqs);
-        // print out results
-        //System.out.println("SYMBOL\tWEIGHT\tHUFFMAN CODE");
         printCodes(tree, new StringBuffer());
         String finalStr = "";
         int i=0;
@@ -128,7 +105,6 @@ public class HuffmannGui implements ActionListener {
         t2.setText(finalStr);
         length = finalStr.length();
         jlbl1.setText("The size of the document is : "+ Integer.toString(length) + " bits");
-        //int n = Integer.parseInt(jlbl.getText())/Integer.parseInt(jlbl1.getText());
         jlbl2.setText("Compression Ratio"+ " : " + Double.toString(len1*16.0/length) );
     }
     
@@ -171,10 +147,6 @@ public class HuffmannGui implements ActionListener {
         t1.setBounds(40, 180, 500, 600);
         t1.setLineWrap(true);
         t1.setWrapStyleWord(true);
-        
-        
-        //System.out.println(list1);
-        //System.out.println(list);
         File [] a = new File[list1.size()];
         for(int i=0;i<list1.size();i++)
         {
@@ -186,19 +158,15 @@ public class HuffmannGui implements ActionListener {
         jcmb.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 t1.setText("");
-                //System.out.println("Helo");
                 File f = (File)jcmb.getSelectedItem();
                 file = f;
-                //System.out.println(f);
                 String line;
                 String s;
                 s = file.getAbsolutePath();
                 jlbl.setText("The size of the document is : " + file.length()*16 + " bits");
-                //System.out.println(s);
                 try {
                     fr = new FileReader(s);
                 } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
                 }
                 BufferedReader reader = new BufferedReader(fr);
                 try {
@@ -206,7 +174,6 @@ public class HuffmannGui implements ActionListener {
                         t1.append(line + "\n");
                     }
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                 }
             }
         });
@@ -246,4 +213,3 @@ public class HuffmannGui implements ActionListener {
         jfrm.setVisible(true);
     }
 }
-
